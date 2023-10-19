@@ -32,7 +32,7 @@ router.post('/register', (req, res) => {
   });
 
 // API-endpunkt för inloggning
-router.post('/login', (req, res) => {
+/*router.post('/login', (req, res) => {
   const { email, password } = req.body;
 
   // Kontrollera användaruppgifter mot databasen
@@ -47,6 +47,32 @@ router.post('/login', (req, res) => {
         console.log("Du är inloggad")
         // Skicka JWT som svar
         res.json({ token });
+      } else {
+        // Inloggningen misslyckades
+        res.status(401).json({ error: 'Ogiltiga inloggningsuppgifter' });
+      }
+    }
+  });
+});*/
+
+router.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  // Kontrollera användaruppgifter mot databasen
+  const query = 'SELECT * FROM Users WHERE email = ? AND password = ?';
+  db.query(query, [email, password], (err, results) => {
+    if (err) {
+      res.status(500).json({ error: 'Ett fel uppstod vid inloggning' });
+    } else {
+      if (results.length > 0) {
+        // Användaren hittades, logga in
+        const token = generateJWT(email); // Skapa JWT
+
+        // Hämta användaruppgifter från resultatet
+        const userData = results[0];
+
+        // Skicka JWT och användaruppgifter som svar
+        res.json({ token, user: userData });
       } else {
         // Inloggningen misslyckades
         res.status(401).json({ error: 'Ogiltiga inloggningsuppgifter' });

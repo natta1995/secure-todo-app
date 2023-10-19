@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-  const credentials = { email, password };
+    const credentials = { email, password };
 
     fetch('http://localhost:3001/api/users/login', {
       method: 'POST',
@@ -19,11 +21,13 @@ function Login() {
     })
       .then((response) => response.json())
       .then((data) => {
-    
         if (data.token) {
-         
           localStorage.setItem('token', data.token);
-          console.log("Du är inloggad")
+          localStorage.setItem('user', JSON.stringify(data.user));
+          console.log('Du är inloggad');
+
+          // Omdirigera användaren till en annan sida efter inloggning
+          navigate('/todo');
         } else {
           alert('Ogiltiga inloggningsuppgifter');
         }
@@ -43,10 +47,14 @@ function Login() {
           <input type="password" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
         <button type="submit">Logga in</button>
-        <p>Har du inte ett konto? <Link to="/register">Registrera dig här</Link></p>
+        <p>
+          Har du inte ett konto? <Link to="/register">Registrera dig här</Link>
+        </p>
       </form>
     </div>
   );
 }
 
 export default Login;
+
+
