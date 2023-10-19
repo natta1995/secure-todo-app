@@ -5,7 +5,7 @@ const secretKey = 'hemligt';
 
 // Function to generate a JWT token for a user
 function generateJWT(email) {
-  const token = jwt.sign({ email }, secretKey, { expiresIn: '4h' }); 
+  const token = jwt.sign({ email }, secretKey, { expiresIn: '2h' }); 
   return token;
 }
 

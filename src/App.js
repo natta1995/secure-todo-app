@@ -1,11 +1,19 @@
-import './App.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Login from './LogInPage';
+import Register from './RegisterPage'
 
 function App() {
   return (
-    <div className="App">
-  
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
 export default App;
+
+
+

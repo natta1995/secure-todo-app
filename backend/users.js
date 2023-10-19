@@ -44,7 +44,7 @@ router.post('/login', (req, res) => {
       if (results.length > 0) {
         // Användaren hittades, logga in
         const token = generateJWT(email); // Skapa JWT
-
+        console.log("Du är inloggad")
         // Skicka JWT som svar
         res.json({ token });
       } else {
