@@ -19,6 +19,20 @@ router.get('/', (req, res) => {
 // API-endpunkt för användarregistrering
 router.post('/register', (req, res) => {
     const { email, username, password, role } = req.body;
+
+
+    // Validera lösenordet
+  if (
+    password.length < 12 ||
+    !/[a-z]/.test(password) ||     // Innehåller minst en liten bokstav
+    !/[A-Z]/.test(password) ||     // Innehåller minst en stor bokstav
+    !/[0-9]/.test(password) ||        // Innehåller siffror
+    !/[^a-zA-Z0-9]/.test(password)    // Innehåller specialtecken
+  ) {
+    res.status(400).json({ error: 'Ogiltigt lösenord' });
+    return;
+  }
+
   
     // Lägg till användaren i databasen
     const query = 'INSERT INTO Users (email, username, password, role) VALUES (?, ?, ?, ?)';
@@ -31,29 +45,6 @@ router.post('/register', (req, res) => {
     });
   });
 
-// API-endpunkt för inloggning
-/*router.post('/login', (req, res) => {
-  const { email, password } = req.body;
-
-  // Kontrollera användaruppgifter mot databasen
-  const query = 'SELECT * FROM Users WHERE email = ? AND password = ?';
-  db.query(query, [email, password], (err, results) => {
-    if (err) {
-      res.status(500).json({ error: 'Ett fel uppstod vid inloggning' });
-    } else {
-      if (results.length > 0) {
-        // Användaren hittades, logga in
-        const token = generateJWT(email); // Skapa JWT
-        console.log("Du är inloggad")
-        // Skicka JWT som svar
-        res.json({ token });
-      } else {
-        // Inloggningen misslyckades
-        res.status(401).json({ error: 'Ogiltiga inloggningsuppgifter' });
-      }
-    }
-  });
-});*/
 
 router.post('/login', (req, res) => {
   const { email, password } = req.body;

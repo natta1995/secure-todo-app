@@ -16,7 +16,15 @@ function TodoList() {
     <div>
       <h2>Todo List</h2>
       <p>Inloggad som: {state.user ? state.user.username : 'Ingen användare inloggad'}</p>
-      {/* Dina todo-list-komponenter här */}
+      <div>
+        <h3>Lägg till en ny Todo</h3>
+        <input
+          type="text"
+         
+         
+        />
+        <button >Lägg till</button>
+      </div>
     </div>
   );
 }
