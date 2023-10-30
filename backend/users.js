@@ -3,7 +3,9 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./db'); 
-const { generateJWT } = require('./auth'); 
+const { generateJWT,  generatePasswordResetToken } = require('./auth'); 
+const  sendPasswordResetEmail  = require('./resetEmail');
+
 
 // API-endpunkt för att hämta användare
 router.get('/', (req, res) => {
@@ -71,6 +73,75 @@ router.post('/login', (req, res) => {
     }
   });
 });
+
+
+// Begär lösenordsåterställning
+router.post('/reset-password-request', (req, res) => {
+  const { email } = req.body;
+
+  // Kontrollera om användaren finns i databasen
+  db.query('SELECT * FROM users WHERE email = ?', [email], (error, results) => {
+    if (error) {
+      console.error("Databasfel är följande:", error)
+      return res.status(500).json({ message: 'Database fungerar inte som den skall' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Användaren hittades inte.' });
+    }
+
+    const resetToken = generatePasswordResetToken();
+
+    // Spara token i databasen
+    db.query('UPDATE users SET reset_token = ? WHERE email = ?', [resetToken, email], (error) => {
+      if (error) {
+        console.error("Databasfel är följande:", error)
+        return res.status(500).json({ message: 'Databasen funkade inte här, steg två' });
+      }
+
+      // Skicka e-postmeddelande med återställningslänk
+      sendPasswordResetEmail(email, resetToken); // Använd sendPasswordResetEmail-funktionen
+
+      res.json({ message: 'Ett e-postmeddelande med en återställningslänk har skickats.' });
+    });
+  });
+});
+
+// Återställ lösenord
+router.post('/reset-password', (req, res) => {
+  const { email, token, newPassword } = req.body;
+
+  // Hämta token från databasen
+  db.query('SELECT reset_token FROM users WHERE email = ?', [email], (error, results) => {
+    if (error) {
+      return res.status(500).json({ message: 'Database error' });
+    }
+
+    const savedToken = results[0].reset_token;
+
+    if (!savedToken || savedToken !== token) {
+      return res.status(400).json({ message: 'Ogiltigt eller utgånget token.' });
+    }
+
+    // Uppdatera användarens lösenord
+    db.query('UPDATE users SET password = ? WHERE email = ?', [newPassword, email], (error) => {
+      if (error) {
+        return res.status(500).json({ message: 'Database error' });
+      }
+
+      // Ta bort token från databasen efter användning
+      db.query('UPDATE users SET reset_token = NULL WHERE email = ?', [email], (error) => {
+        if (error) {
+          return res.status(500).json({ message: 'Database error' });
+        }
+
+        res.json({ message: 'Lösenordet har återställts.' });
+      });
+    });
+  });
+});
+
+
 
 
 module.exports = router;
