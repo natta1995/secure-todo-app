@@ -20,7 +20,7 @@ router.get('/', (req, res) => {
 
 // API-endpunkt för användarregistrering
 router.post('/register', (req, res) => {
-    const { email, username, password, role } = req.body;
+    const { email, username, password } = req.body;
 
 
     // Validera lösenordet
@@ -35,7 +35,7 @@ router.post('/register', (req, res) => {
     return;
   }
 
-  
+  const role = 'user'; // Definiera standardrollen
     // Lägg till användaren i databasen
     const query = 'INSERT INTO Users (email, username, password, role) VALUES (?, ?, ?, ?)';
     db.query(query, [email, username, password, role], (err, result) => {
