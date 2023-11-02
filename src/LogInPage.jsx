@@ -66,9 +66,8 @@ function Login() {
                   />
                 </div>
                 <button type="submit" className="btn btn-primary">Logga in</button>
-                <p>
-                  Har du inte ett konto? <Link to="/register">Registrera dig här</Link>
-                </p>
+                <p>Har du inte ett konto? <Link to="/register">Registrera dig här</Link></p>
+                <Link to="/password">Glömt lösenordet?</Link>
               </form>
             </div>
           </div>

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function TodoApp() {
   const [todos, setTodos] = useState([]);
   const [todoDescription, setTodoDescription] = useState('');
+
 
   // Funktion för att hämta todos från din backend
   const fetchTodos = () => {
@@ -35,14 +37,6 @@ function TodoApp() {
     }
   };
 
-  // Rendera din lista av todos
-  const todoItems = todos.map((todo) => (
-    <div key={todo.id}>
-      <input type="checkbox" checked={todo.completed} />
-      <span>{todo.description}</span>
-    </div>
-  ));
-
   const logout = () => {
     // Rensa token från localStorage (eller sessionStorage om du använder det)
     localStorage.removeItem('token');
@@ -52,22 +46,33 @@ function TodoApp() {
   };
 
   return (
-    <div>
+    <div className="container mt-5">
       <h1>Todo App</h1>
-      
-      <a href="http://localhost:3000/"
-        onClick={() => {logout();}}>
-        Logga ut</a>
-      <div>
+      <a href="http://localhost:3000/" className="btn btn-primary" onClick={logout}>
+        Logga ut
+      </a>
+      <div className="input-group mb-3">
         <input
           type="text"
+          className="form-control"
           value={todoDescription}
           onChange={(e) => setTodoDescription(e.target.value)}
           placeholder="Skriv din todo här"
         />
-        <button onClick={addTodo}>Lägg till</button>
+        <div className="input-group-append">
+          <button onClick={addTodo} className="btn btn-success">Lägg till</button>
+        </div>
       </div>
-      <div>{todoItems}</div>
+      <ul className="list-group">
+        {todos.map((todo) => (
+          <li className="list-group-item d-flex justify-content-between" key={todo.id}>
+            <div>
+              <input type="checkbox" checked={todo.completed} className="mr-3" />
+              <span style={{ marginLeft: '10px' }}>{todo.description}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
