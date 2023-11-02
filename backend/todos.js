@@ -17,6 +17,7 @@ router.get('/', (req, res) => {
 // API-endpunkt för att skapa en ny "todo"
 router.post('/', (req, res) => {
     const { description } = req.body;
+
     const query = 'INSERT INTO todos (description) VALUES (?)';
     db.query(query, [description], (err, result) => {
       if (err) {

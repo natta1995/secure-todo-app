@@ -18,6 +18,21 @@ router.get('/', (req, res) => {
   });
 });
 
+router.get('/:id', (req, res) => {
+  const user = req.user; // Antag att användarinformationen finns i req.user efter att ha verifierat JWT-token
+
+  if (user) {
+    // Returnera användarinformation som JSON
+    res.json({
+      username: user.username,
+      role: user.role,
+    });
+  } else {
+    res.status(404).json({ message: 'Användaren hittades inte' });
+  }
+});
+
+
 // API-endpunkt för användarregistrering
 router.post('/register', (req, res) => {
     const { email, username, password } = req.body;

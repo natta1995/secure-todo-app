@@ -28,7 +28,7 @@ function Login() {
           console.log('Du är inloggad');
 
           // Omdirigera användaren till en annan sida efter inloggning
-          navigate('/todo');
+          navigate('/todo', { state: { username: data.user.username, role: data.user.role }});
         } else {
           alert('Ogiltiga inloggningsuppgifter');
         }

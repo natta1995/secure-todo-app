@@ -20,14 +20,13 @@ export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, { user: null });
 
   useEffect(() => {
-    // Kolla om användaren är inloggad och uppdatera användarstatusen
     const token = localStorage.getItem('token');
     if (token) {
       // Gör ett anrop för att hämta användarinformation från servern om det behövs
       // När du får användarinformationen från servern, använd 'dispatch' för att uppdatera användarinformationen
       // Exempel: dispatch({ type: 'LOGIN', user: userData });
       const userData = {}; // Uppdatera detta med den faktiska användarinformationen
-      dispatch({ type: 'LOGIN', user: userData });
+      dispatch({ type: 'LOGIN', user: userData , username: userData.username, role: userData.role});
     }
   }, []);
 
@@ -69,4 +68,5 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-};*/
+};
+*/
