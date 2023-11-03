@@ -1,3 +1,185 @@
+// email.js
+require('dotenv').config();
+const nodemailer = require('nodemailer');
+//const fs = require('fs');
+
+// Skapa en transporter för att skicka e-post
+function createTransporter(tokens) {
+  return nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      type: 'OAuth2',
+      user: process.env.MY_EMAIL,
+      clientId: process.env.DIN_KLIENT_ID,
+      clientSecret: process.env.DIN_KLIENT_SECRET,
+      refreshToken: tokens.refresh_token,
+      accessToken: tokens.access_token,
+    },
+  });
+}
+
+function sendPasswordResetEmail(email, resetToken, tokens) {
+  const transporter = createTransporter(tokens);
+
+  const mailOptions = {
+    from: process.env.MY_EMAIL,
+    to: email,
+    subject: 'Återställ ditt lösenord',
+    text: `Klicka på länken för att återställa ditt lösenord: http://localhost:3001/reset-password?token=${resetToken}`
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log('Fel vid sändning av e-post:', error);
+    } else {
+      console.log('E-post skickad:', info.response);
+    }
+  });
+}
+
+module.exports = sendPasswordResetEmail;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*const nodemailer = require('nodemailer');
+const fs = require('fs');
+
+
+
+
+// Skapa en transporter för att skicka e-post
+const transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    type: 'OAuth2',
+    user: 'nhallerdal@gmail.com',
+    clientId: '495009116943-qst5j4oagb7rm7krrc63d2laalc0steu.apps.googleusercontent.com',
+    clientSecret: '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',
+    refreshToken: token.tokens.refresh_token,
+    accessToken: token.tokens.access_token,
+  },
+});
+
+function sendPasswordResetEmail(email, resetToken) {
+  const mailOptions = {
+    from: 'nhallerdal@gmail.com',
+    to: email,
+    subject: 'Återställ ditt lösenord',
+    text: `Klicka på länken för att återställa ditt lösenord: http://localhost:3001/reset-password?token=${resetToken}`
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log('Fel vid sändning av e-post:', error);
+    } else {
+      console.log('E-post skickad:', info.response);
+    }
+  });
+}
+
+module.exports = sendPasswordResetEmail;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//email.js
+
+/*const transporter = require('./email'); // Importera din tidigare konfigurerade transporter
+
+function sendPasswordResetEmail(email, resetToken) {
+  const mailOptions = {
+    from: 'nhallerdal@gmail.com',
+    to: email,
+    subject: 'Återställ ditt lösenord',
+    text: `Klicka på länken för att återställa ditt lösenord: http://localhost:3001/reset-password?token=${resetToken}`
+  };
+
+  console.log('MailOptions: steg två', mailOptions);
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log('Fel vid sändning av e-post:', error);
+    } else {
+      console.log('E-post skickad:', info.response);
+    }
+  });
+}
+
+module.exports = sendPasswordResetEmail;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*const nodemailer = require('nodemailer');
 const { OAuth2Client } = require('google-auth-library');
 
@@ -35,5 +217,4 @@ oauth2Client.getAccessToken((err, token) => {
 
 
   module.exports = transporter;
-});
-*/
+});*/

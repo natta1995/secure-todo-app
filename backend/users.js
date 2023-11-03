@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('./db'); 
 const { generateJWT,  generatePasswordResetToken } = require('./auth'); 
-const  sendPasswordResetEmail  = require('./resetEmail');
+const  sendPasswordResetEmail  = require('./email.js');
 
 
 // API-endpunkt för att hämta användare
