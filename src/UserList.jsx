@@ -46,6 +46,25 @@ function UserManagement({ adminToken }) {
       .catch((error) => console.error(error));
   };
   
+  const handleUserDelete = (userId) => {
+    // Skapa en DELETE-förfrågan för att ta bort användaren
+    fetch(`http://localhost:3001/api/users/${userId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${adminToken}`
+      }
+    })
+      .then((response) => {
+        if (response.ok) {
+          // Uppdatera användarlistan efter borttagningen
+          const updatedUsers = users.filter((user) => user.id !== userId);
+          setUsers(updatedUsers);
+        } else {
+          console.error('Kunde inte ta bort användaren');
+        }
+      })
+      .catch((error) => console.error(error));
+  };
 
   return (
     <div>
@@ -65,6 +84,9 @@ function UserManagement({ adminToken }) {
               <td>
                 <button onClick={() => handleRoleChange(user.id)}>
                   Ändra
+                </button>
+                <button onClick={() => handleUserDelete(user.id)}>
+                  Radera
                 </button>
               </td>
             </tr>

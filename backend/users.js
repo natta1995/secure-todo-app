@@ -44,6 +44,19 @@ router.put('/change-role/:id', (req, res) => {
   });
 });
 
+// API-endpunkt för att ta bort en användare
+router.delete('/:id', (req, res) => {
+  const userId = req.params.id;
+
+  // Utför borttagningen från databasen baserat på userId
+  db.query('DELETE FROM Users WHERE id = ?', userId, (err, result) => {
+    if (err) {
+      res.status(500).json({ error: 'Kunde inte ta bort användaren' });
+    } else {
+      res.json({ message: 'Användaren har tagits bort' });
+    }
+  });
+});
 
 
 router.get('/:id', (req, res) => {
