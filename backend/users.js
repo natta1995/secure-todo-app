@@ -5,7 +5,18 @@ const router = express.Router();
 const db = require('./db'); 
 const { generateJWT,  generatePasswordResetToken } = require('./auth'); 
 const  sendPasswordResetEmail  = require('./email.js');
+const bcrypt = require('bcrypt');
 
+// Funktion för att hasha ett lösenord
+function hashPassword(password) {
+  const saltRounds = 10; // Antal hashningsrundor
+  return bcrypt.hashSync(password, saltRounds);
+}
+
+// Använda funktionen för att hasha ett lösenord
+const newPassword = 'nyttLosenord';
+const hashedPassword = hashPassword(newPassword);
+console.log(hashedPassword); // Det hashade lösenordet
 
 // API-endpunkt för att hämta användare
 router.get('/', (req, res) => {
@@ -132,7 +143,7 @@ router.post('/login', (req, res) => {
 
 
 // Begär lösenordsåterställning
-router.post('/reset-password-request', (req, res) => {
+/*router.post('/reset-password-request', (req, res) => {
   const { email } = req.body;
 
   // Kontrollera om användaren finns i databasen
@@ -195,8 +206,58 @@ router.post('/reset-password', (req, res) => {
       });
     });
   });
+});*/
+
+// Begär lösenordsåterställning
+router.post('/reset-password-request', (req, res) => {
+  const { email } = req.body;
+
+  // Generera och spara återställningstoken i databasen
+  const resetToken = generatePasswordResetToken();
+  const resetTokenExpiration = Date.now() + 3600000; // Token gäller i 1 timme
+  db.query('UPDATE users SET reset_token = ?, reset_token_expiration = ? WHERE email = ?', [resetToken, resetTokenExpiration, email], (error) => {
+    if (error) {
+      return res.status(500).json({ message: 'Database error' });
+    }
+
+    // Skicka e-postmeddelande med återställningslänk inklusive resetToken
+    sendPasswordResetEmail(email, resetToken); // Använd sendPasswordResetEmail-funktionen
+
+    res.json({ message: 'Ett e-postmeddelande med en återställningslänk har skickats.' });
+  });
 });
 
+// Återställ lösenord
+router.post('/reset-password', (req, res) => {
+  const { email, token, newPassword } = req.body;
+
+  // Hämta återställningstoken och tokenets giltighetstid från databasen
+  db.query('SELECT reset_token, reset_token_expiration FROM users WHERE email = ?', [email], (error, results) => {
+    if (error) {
+      return res.status(500).json({ message: 'Database error' });
+    }
+
+    const savedToken = results[0].reset_token;
+    const tokenExpiration = results[0].reset_token_expiration;
+
+    // Kontrollera att tokenet är giltigt
+    if (!savedToken || savedToken !== token || Date.now() > tokenExpiration) {
+      return res.status(400).json({ message: 'Ogiltigt eller utgånget token.' });
+    }
+
+    // Kryptera det nya lösenordet (om du inte redan gör det)
+    const hashedPassword = hashPassword(newPassword); // Implementera hashPassword-funktionen
+
+    // Uppdatera användarens lösenord och ta bort återställningstoken
+    db.query('UPDATE users SET password = ?, reset_token = NULL, reset_token_expiration = NULL WHERE email = ?', [hashedPassword, email], (error) => {
+      if (error) {
+        return res.status(500).json({ message: 'Database error' });
+      }
+
+      res.json({ message: 'Lösenordet har återställts.' });
+    });
+  });
+});
 
 
 

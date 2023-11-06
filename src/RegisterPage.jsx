@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Importera Bootstrap CSS
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Registration() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
+  const navigate = useNavigate();
+
+
 
   const handleRegister = async () => {
     const user = {
@@ -26,6 +29,7 @@ function Registration() {
 
       if (response.ok) {
         alert('Registreringen lyckades!');
+        navigate('/'); // Omdirigera till loginsidan
       } else {
         const data = await response.json();
         alert(`Fel vid registrering: ${data.error}`);
@@ -74,7 +78,7 @@ function Registration() {
                   />
                 </div>
                 <button type="button" onClick={handleRegister} className="btn btn-primary">
-                  Registrera
+                 Registrera
                 </button>
                 <p>
                   Har du redan ett konto? <Link to="/">Logga in</Link>
