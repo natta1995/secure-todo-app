@@ -40,6 +40,18 @@ function TodoApp() {
     }}
   };
 
+    // Funktion för att ta bort en todo
+    const deleteTodo = (todoId) => {
+      fetch(`http://localhost:3001/api/todos/${todoId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` },
+      })
+        .then(() => {
+          fetchTodos();
+        })
+        .catch((error) => console.error(error));
+    };
+
   const logout = () => {
     localStorage.removeItem('token');
   };
@@ -72,7 +84,7 @@ function TodoApp() {
         {todos.map((todo) => (
           <li className="list-group-item d-flex justify-content-between" key={todo.id}>
             <div>
-              <input type="checkbox" checked={todo.completed} className="mr-3" />
+              <input type="checkbox" checked={todo.completed} className="mr-3" onChange={() => deleteTodo(todo.id)} />
               <span style={{ marginLeft: '10px' }}>{todo.description}</span>
             </div>
           </li>
