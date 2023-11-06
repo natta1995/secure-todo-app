@@ -18,6 +18,34 @@ router.get('/', (req, res) => {
   });
 });
 
+router.get('/users', (req, res) => {
+  // Gör en databasfråga för att hämta alla användare med deras roller
+  db.query('SELECT id, username, role FROM Users', (err, results) => {
+    if (err) {
+      res.status(500).json({ error: 'Kunde inte hämta användare' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// API-endpunkt för att ändra användarroll
+router.put('/change-role/:id', (req, res) => {
+  const userId = req.params.id;
+  const newRole = req.body.role; // Skicka den nya rollen i förfråganens kropp
+
+  // Uppdatera användarrollen i databasen baserat på userId
+  db.query('UPDATE Users SET role = ? WHERE id = ?', [newRole, userId], (err, result) => {
+    if (err) {
+      res.status(500).json({ error: 'Kunde inte uppdatera användarens roll' });
+    } else {
+      res.json({ message: 'Användarens roll har uppdaterats' });
+    }
+  });
+});
+
+
+
 router.get('/:id', (req, res) => {
   const user = req.user; // Antag att användarinformationen finns i req.user efter att ha verifierat JWT-token
 
