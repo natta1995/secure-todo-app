@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import UserList from './UserList'
-import InvateUsers from './InvateUsers';
+import UserList from '../components/UserList'
+import InvateUsers from '../InvateUsers';
 
 
 function TodoApp() {

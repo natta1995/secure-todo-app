@@ -9,7 +9,7 @@ const ResetPassword = ({ token }) => {
 
   const resetPassword = () => {
     fetch('http://localhost:3001/api/users/reset-password', {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'x-access-token': resetToken
