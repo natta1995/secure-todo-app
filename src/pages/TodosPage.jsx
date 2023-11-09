@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import UserList from '../components/UserList'
 import InvateUsers from '../InvateUsers';
@@ -12,23 +12,39 @@ function TodoApp() {
   const token = localStorage.getItem('token');
 
   // Funktion för att hämta todos från din backend
-  const fetchTodos = () => {
-    fetch('http://localhost:3001/api/todos/')
-      .then((response) => response.json())
-      .then((data) => setTodos(data))
-      .catch((error) => console.error(error));
-  };
+  const fetchTodos = useCallback(() => {
+    if (!token) {
+      console.error('Token är inte tillgänglig.');
+      return;
+    }
 
-  // Anropa fetchTodos när komponenten har monterats
+    fetch('http://localhost:3001/api/todos/', {
+      headers: { 'Authorization': `Bearer ${token}` },
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      setTodos(data);
+    })
+    .catch((error) => {
+      console.error('Det gick inte att hämta todos:', error);
+    });
+  }, [token] );
+
+  // Anropa fetchTodos när komponenten har monterats och när token ändras
   useEffect(() => {
     fetchTodos();
-  }, []);
+  }, [fetchTodos]); 
+
 
   // Funktion för att lägga till en ny todo
   const addTodo = () => {
     if (todoDescription) {
       if (user && user.role === 'admin'){
-      // Använd fetch för att göra POST-förfrågan till din API-endpunkt
       fetch('http://localhost:3001/api/todos/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json',  'Authorization': `Bearer ${token}`},

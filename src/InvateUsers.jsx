@@ -3,27 +3,39 @@ import React, { useState } from 'react';
 
 const InviteUser = () => {
   const [email, setEmail] = useState('');
+  const token = localStorage.getItem('token');
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
   };
 
   const handleInviteClick = () => {
-    // Här kan du anropa en funktion som skickar inbjudningsmejl med den angivna e-postadressen
-    if (email) {
-      // Skicka inbjudan här
-      // Exempel: Skicka e-postadressen till din backend för att hantera inbjudningen
+    if (email && token) {
       fetch('http://localhost:3001/api/users/invate-friend-request', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ email }),
       })
-        .then(() => {
-          setEmail(''); // Återställ formuläret efter att inbjudningen har skickats
-        })
-        .catch((error) => console.error(error));
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(() => {
+        setEmail(''); // Återställ e-postadressfältet
+        // Hantera ett lyckat svar här, t.ex. visa ett meddelande till användaren
+      })
+      .catch((error) => {
+        console.error('Det gick inte att skicka inbjudan:', error);
+        // Hantera fel här, t.ex. visa ett felmeddelande till användaren
+      });
+    } else {
+      // Hantera fallet när e-postadress eller token saknas
+      console.error('E-postadress eller token saknas.');
     }
   };
 
