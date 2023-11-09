@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import UserList from '../components/UserList'
 import InvateUsers from '../InvateUsers';
+import requireAuth from '../guardToken';
 
 
 function TodoApp() {
@@ -55,6 +56,7 @@ function TodoApp() {
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
   };
 
   return (
@@ -97,7 +99,6 @@ function TodoApp() {
   );
 }
 
-export default TodoApp;
-
+export default requireAuth(TodoApp);
 
 

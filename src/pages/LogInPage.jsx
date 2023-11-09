@@ -22,9 +22,12 @@ function Login() {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         if (data.token) {
           localStorage.setItem('token', data.token);
           localStorage.setItem('user', JSON.stringify(data.user));
+          console.log('Token efter sparande:', localStorage.getItem('token'));
+          console.log('Användare efter sparande:', localStorage.getItem('user'));
           console.log('Du är inloggad');
 
           // Omdirigera användaren till en annan sida efter inloggning

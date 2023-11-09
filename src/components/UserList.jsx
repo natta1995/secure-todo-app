@@ -6,17 +6,33 @@ function UserManagement({ adminToken }) {
 
 
   useEffect(() => {
-    // Anropa din backend API för att hämta användarinformationen
     fetch('http://localhost:3001/api/users', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${adminToken}` // Du behöver administratörens JWT-token
       },
     })
-      .then((response) => response.json())
-      .then((data) => setUsers(data))
-      .catch((error) => console.error(error));
-  }, []);
+      .then((response) => {
+        if (!response.ok) {
+          // Om responsen inte är ok, kasta ett fel för att gå till catch-blocket
+          throw new Error(`Error: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Kontrollera om datan är en array innan du sätter den i state
+        if (Array.isArray(data)) {
+          setUsers(data);
+        } else {
+          // Om datan inte är en array, sätt en tom array eller hantera felet
+          setUsers([]);
+          console.error('Data received is not an array:', data);
+        }
+      })
+      .catch((error) => {
+        console.error('Fetch error:', error);
+      });
+  }, [adminToken]);
 
   const handleRoleChange = (userId) => {
     // Hämta den nuvarande användarrollen från roleChanges-objektet

@@ -6,6 +6,7 @@ import TodoList from './pages/TodosPage'
 import ForgottenPassword from './forgottPassword'
 import NewPassword from './newPassword';
 import RegisterUser from './RegisterUser';
+//import requireAuth from './guardToken';
 
 function App() {
   return (
