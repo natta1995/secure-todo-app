@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import UserList from '../components/UserList'
-import InvateUsers from '../InvateUsers';
+import UserManagementModal from '../components/UserManagementModal';
 import requireAuth from '../guardToken';
+import { Link } from 'react-router-dom';
 
 
 function TodoApp() {
   const [todos, setTodos] = useState([]);
   const [todoDescription, setTodoDescription] = useState('');
+  const [showUserManagement, setShowUserManagement] = useState(false);
   const user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
 
@@ -70,10 +71,35 @@ function TodoApp() {
         .catch((error) => console.error(error));
     };
 
+
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    if (token) {
+      fetch('http://localhost:3001/api/users/logout', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log('Utloggad från backend');
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      })
+      .catch(error => {
+        console.error('Det gick inte att logga ut från backend:', error);
+      })
+      .finally(() => {
+        // Rensa token och användaruppgifter från localStorage oavsett svar från server
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        // Omdirigera till login-sidan eller gör något annat efter utloggning
+        window.location.href = 'http://localhost:3000/';
+      });
+    } else {
+      console.error('Ingen token finns för att logga ut');
+    }
   };
+  
 
   return (
     <div className="container mt-5">
@@ -81,6 +107,21 @@ function TodoApp() {
       <a href="http://localhost:3000/" className="btn btn-primary" onClick={logout}>
         Logga ut
       </a>
+      {user.role === 'admin' && (
+        <button onClick={() => setShowUserManagement(true)} className="btn btn-secondary">
+          Hantera användarroller
+        </button>
+      )}
+      {showUserManagement && (
+        <UserManagementModal
+          onClose={() => setShowUserManagement(false)}
+          adminToken={token}
+        />
+      )}
+       
+       {user.role === 'admin' && 
+      <Link to="/invatefriend">Bjud in en vän</Link>
+        }
         <div>
           <p>Användare: {user.username}</p>
           <p>Roll: {user.role}</p>
@@ -109,8 +150,8 @@ function TodoApp() {
           </li>
         ))}
       </ul>
-      {user.role === 'admin' && <UserList adminToken={token} />}
-      {user.role === 'admin' && <InvateUsers />}
+      
+     
     </div>
   );
 }

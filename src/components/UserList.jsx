@@ -67,6 +67,7 @@ function UserManagement({ adminToken }) {
     fetch(`http://localhost:3001/api/users/${userId}`, {
       method: 'DELETE',
       headers: {
+        'Content-Type': 'application/json',
         'Authorization': `Bearer ${adminToken}`
       }
     })

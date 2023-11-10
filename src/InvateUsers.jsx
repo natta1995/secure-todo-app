@@ -5,6 +5,8 @@ const InviteUser = () => {
   const [email, setEmail] = useState('');
   const token = localStorage.getItem('token');
 
+  const user = JSON.parse(localStorage.getItem('user'));
+
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
   };
@@ -39,6 +41,7 @@ const InviteUser = () => {
     }
   };
 
+  if (user && user.role === 'admin'){
   return (
     <div>
       <h2>Bjud in en vän</h2>
@@ -58,6 +61,15 @@ const InviteUser = () => {
       </div>
     </div>
   );
-};
+} else {
+  return (
+    <div>
+      <h2>Sidan hittades inte</h2>
+      <p>Det verkar som att sidan du letar efter inte finns eller att du inte har behörighet att se den.</p>
+    </div>
+  );
+}
 
+}
+ 
 export default InviteUser;

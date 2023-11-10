@@ -6,7 +6,7 @@ import TodoList from './pages/TodosPage'
 import ForgottenPassword from './forgottPassword'
 import NewPassword from './newPassword';
 import RegisterUser from './RegisterUser';
-//import requireAuth from './guardToken';
+import InviteUser from './InvateUsers';
 
 function App() {
   return (
@@ -19,6 +19,7 @@ function App() {
         <Route path="/todo" element={<TodoList />} />
         <Route path="/newpassword" element={<NewPassword />} />
         <Route path="/registeruser" element={<RegisterUser />} />
+        <Route path="/invatefriend" element={<InviteUser />} />
       </Routes>
     </BrowserRouter>
     </AuthProvider>
