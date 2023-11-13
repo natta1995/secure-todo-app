@@ -1,7 +1,7 @@
 // UserManagementModal-komponenten
 
 import React from 'react';
-import UserManagement from './UserList';
+import UserManagement from './components/UserList';
 
 const UserManagementModal = ({ onClose, adminToken }) => {
   return (

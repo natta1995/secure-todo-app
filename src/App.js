@@ -3,10 +3,10 @@ import { AuthProvider } from './AuthContext';
 import Login from './pages/LogInPage';
 import Register from './pages/RegisterPage'
 import TodoList from './pages/TodosPage'
-import ForgottenPassword from './forgottPassword'
+import ForgottenPassword from './pages/ForgottPasswordPage'
 import NewPassword from './newPassword';
-import RegisterUser from './RegisterUser';
-import InviteUser from './InvateUsers';
+import RegisterUser from './pages/RegisterUserInvatePage';
+import InviteUser from './components/InvateUsers';
 
 function App() {
   return (

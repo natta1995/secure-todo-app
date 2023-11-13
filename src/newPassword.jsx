@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ResetPassword = ({ token }) => {
   const [newPassword, setNewPassword] = useState('');
+  const navigate = useNavigate();
 
   const searchParams = new URLSearchParams(window.location.search);
   const resetToken = searchParams.get('resetToken'); 
@@ -19,6 +21,7 @@ const ResetPassword = ({ token }) => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data); // Hantera svaret från din backend
+        navigate('/'); // Omdirigera till loginsidan
       })
       .catch((error) => console.error(error));
   };

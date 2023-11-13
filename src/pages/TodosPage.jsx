@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import UserManagementModal from '../components/UserManagementModal';
+import UserManagementModal from '../UserManagementModal';
 import requireAuth from '../guardToken';
 import { Link } from 'react-router-dom';
 
@@ -104,9 +104,12 @@ function TodoApp() {
   return (
     <div className="container mt-5">
       <h1>Todo App</h1>
-      <a href="http://localhost:3000/" className="btn btn-primary" onClick={logout}>
-        Logga ut
-      </a>
+      
+      <div className="d-flex justify-content-end">
+        <a href="http://localhost:3000/" className="btn btn-primary mr-" onClick={logout}>
+          Logga ut
+        </a>
+      </div>
       {user.role === 'admin' && (
         <button onClick={() => setShowUserManagement(true)} className="btn btn-secondary">
           Hantera användarroller
