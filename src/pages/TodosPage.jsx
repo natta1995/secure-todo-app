@@ -110,7 +110,7 @@ function TodoApp() {
           Logga ut
         </a>
       </div>
-      {user.role === 'admin' && (
+      { (user.role === 'admin' || user.role === 'Creater') && (
         <button onClick={() => setShowUserManagement(true)} className="btn btn-secondary">
           Hantera användarroller
         </button>
@@ -122,7 +122,7 @@ function TodoApp() {
         />
       )}
        
-       {user.role === 'admin' && 
+       {(user.role === 'admin' || user.role === 'Creater') && 
       <Link to="/invatefriend">Bjud in en vän</Link>
         }
         <div>

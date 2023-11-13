@@ -41,7 +41,7 @@ const InviteUser = () => {
     }
   };
 
-  if (user && user.role === 'admin'){
+  if (user && (user.role === 'admin' || user.role === 'Creater')){
   return (
     <div>
       <h2>Bjud in en vän</h2>

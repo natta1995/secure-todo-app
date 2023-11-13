@@ -99,12 +99,16 @@ function UserManagement({ adminToken }) {
               <td>{user.username}</td>
               <td>{user.role}</td>
               <td>
+                {user.role !== 'Creater' && (
+                  <>
                 <button onClick={() => handleRoleChange(user.id)}>
                   Ändra
                 </button>
                 <button onClick={() => handleUserDelete(user.id)}>
                   Radera
                 </button>
+                </>
+                )}
               </td>
             </tr>
           ))}
